@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SchemeLens – AI-Based Government Scheme Eligibility & Application Assistant</title>
+<meta name="description" content="SchemeLens: AI-based government scheme eligibility checker with voice search, WhatsApp bot, document verification and deadline alerts in English, Tamil and Hindi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav">
+  <a class="logo" href="#" onclick="showTab('disc')">
+    <svg viewBox="0 0 32 32" width="30" height="30"><defs><linearGradient id="lg"><stop offset="0" stop-color="#18c28a"/><stop offset="1" stop-color="#4cc9f0"/></linearGradient></defs><circle cx="14" cy="14" r="9" fill="none" stroke="url(#lg)" stroke-width="3"/><path d="M21 21l8 8" stroke="#ff9a3c" stroke-width="3.5" stroke-linecap="round"/></svg>
+    SchemeLens
+  </a>
+  <div class="tabs">
+    <button data-tab="disc" class="on" onclick="showTab('disc')">🔎 <span data-i="tDisc">Discover</span></button>
+    <button data-tab="voice" onclick="showTab('voice')">🎤 <span data-i="tVoice">Voice</span></button>
+    <button data-tab="wa" onclick="showTab('wa')">💬 <span data-i="tWa">WhatsApp</span></button>
+    <button data-tab="docs" onclick="showTab('docs')">📄 <span data-i="tDocs">Documents</span></button>
+    <button data-tab="track" onclick="showTab('track')">⏰ <span data-i="tTrack">Tracker</span><b id="badge" hidden>0</b></button>
+  </div>
+  <div class="nav-r">
+    <div class="lang"><button id="l-en" class="on" onclick="setL('en')">EN</button><button id="l-ta" onclick="setL('ta')">தமிழ்</button><button id="l-hi" onclick="setL('hi')">हिन्दी</button></div>
+    <button class="theme" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">☀️</button>
+  </div>
+</nav>
+<div id="alerts"></div>
+
+<main>
+<!-- DISCOVER -->
+<section class="tab" id="tab-disc">
+  <div class="hero">
+    <div class="hero-t">
+      <span class="pill" data-i="tag">Look closer. Find every benefit you deserve.</span>
+      <h1 data-i="title">AI-Based Government Scheme Eligibility &amp; Application Assistant</h1>
+      <p class="mu" data-i="sub">Enter your details once.</p>
+    </div>
+    <div class="lens"><i></i><i></i><i></i><span>🏛️</span></div>
+  </div>
+  <div class="pipe" id="flow"><span>1 User Input</span><span>2 Data Processing</span><span>3 Scheme Database</span><span>4 Eligibility Analysis</span><span>5 Recommendation</span><span>6 Result Generation</span></div>
+  <div class="grid">
+    <aside class="panel">
+      <h2 data-i="you">Your details</h2>
+      <div class="row2"><div><label data-i="age">Age</label><input type="number" id="age" min="0" max="110" placeholder="25"></div>
+      <div><label data-i="gender">Gender</label><select id="gender"><option>Female</option><option>Male</option><option>Other</option></select></div></div>
+      <label data-i="inc">Annual family income (₹)</label><input type="number" id="inc" min="0" step="1000" placeholder="200000">
+      <label data-i="occ">Occupation</label>
+      <select id="occ"><option value="student">Student</option><option value="farmer">Farmer</option><option value="self">Self-employed / business</option><option value="artisan">Traditional artisan</option><option value="salaried">Salaried</option><option value="unemployed">Unemployed</option><option value="homemaker">Homemaker</option><option value="retired">Retired</option></select>
+      <div class="row2"><div><label data-i="cat">Category</label><select id="cat"><option>General</option><option>OBC</option><option>SC</option><option>ST</option></select></div>
+      <div><label data-i="area">Area</label><select id="area"><option value="rural">Rural</option><option value="urban">Urban</option></select></div></div>
+      <label data-i="state">State</label><select id="state"><option>Tamil Nadu</option><option>Other state</option></select>
+      <label class="ck"><input type="checkbox" id="bpl"><span data-i="bpl">Below Poverty Line household</span></label>
+      <label class="ck"><input type="checkbox" id="house"><span data-i="house">Own a pucca (permanent) house</span></label>
+      <label class="ck"><input type="checkbox" id="girl"><span data-i="girl">Girl child under 10 in family</span></label>
+      <label class="ck"><input type="checkbox" id="tax"><span data-i="tax">Pays income tax</span></label>
+      <label class="ck"><input type="checkbox" id="dis"><span data-i="dis">Person with disability</span></label>
+      <label class="ck"><input type="checkbox" id="min"><span data-i="min">Minority community</span></label>
+      <label class="ck"><input type="checkbox" id="wid"><span data-i="wid">Widow</span></label>
+      <label class="ck"><input type="checkbox" id="preg"><span data-i="preg">Pregnant / lactating mother</span></label>
+      <button class="btn" onclick="run()" data-i="go">Find my schemes</button>
+      <button class="btn ghost" onclick="sample()" data-i="smp">Load sample profile</button>
+    </aside>
+    <section id="out"><div class="empty"><div class="big">🔎</div><p data-i="empty">Fill in your details and press “Find my schemes”.</p></div></section>
+  </div>
+</section>
+
+<!-- VOICE -->
+<section class="tab" id="tab-voice" hidden>
+  <div class="box center">
+    <h2>Voice-based scheme search</h2>
+    <p class="mu">Speak in English, தமிழ் or हिन्दी (uses the language selected on top). Example: “I am a 20 year old woman student, SC, family income 1.8 lakh, Tamil Nadu, village”.</p>
+    <button class="mic" id="mic" onclick="listen()">🎤</button>
+    <div id="vstat" class="mu">Tap the mic and speak</div>
+    <div class="typed"><input id="vtxt" placeholder="…or type it here"><button class="btn sm" onclick="voiceText(document.getElementById('vtxt').value)">Search</button></div>
+    <label class="ck c"><input type="checkbox" id="speakOn" checked><span>Read results aloud</span></label>
+    <div id="vgot"></div><div id="vres"></div>
+  </div>
+</section>
+
+<!-- WHATSAPP -->
+<section class="tab" id="tab-wa" hidden>
+  <div class="wa-wrap">
+    <div class="phone"><div class="ph-h"><b>SchemeLens</b><small>WhatsApp bot (simulator)</small></div>
+      <div id="chat"></div><div id="quick"></div>
+      <div class="ph-in"><input id="botTxt" placeholder="Type a message" onkeydown="if(event.key=='Enter')botIn(this.value)"><button onclick="botIn(document.getElementById('botTxt').value)">➤</button></div></div>
+    <div class="box">
+      <h2>WhatsApp chatbot</h2>
+      <p class="mu">This chat runs the same eligibility engine as the website, asking one question at a time, exactly how a WhatsApp bot would.</p>
+      <button class="btn" onclick="shareWa()">Share my results on WhatsApp</button>
+      <button class="btn ghost" onclick="botStart()">Restart chat</button>
+      <p class="mu sm">Connecting a real WhatsApp number needs a small backend with the Meta WhatsApp Cloud API or Twilio. The conversation flow here is what that webhook would use.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTS -->
+<section class="tab" id="tab-docs" hidden>
+  <div class="box">
+    <h2>Automated document verification</h2>
+    <p class="mu">Choose a scheme, upload clear photos of your documents. OCR reads them in your browser (nothing is uploaded to a server) and ticks the matching documents. Aadhaar numbers are checked with the Verhoeff checksum.</p>
+    <select id="docScheme" onchange="renderDocs()"></select>
+    <ul id="docList" class="dl-list"></ul>
+    <label class="drop">📤 Upload document photos<input type="file" id="docFile" accept="image/*" multiple hidden onchange="scan(this.files)"></label>
+    <div id="ocrMsg" class="mu"></div><div id="ocrLog"></div>
+    <button class="btn" id="readyBtn" onclick="docsReady()" hidden>Mark “Documents ready” in Tracker</button>
+    <p class="mu sm">This is an assistive keyword and checksum check, not official verification. The department verifies your documents.</p>
+  </div>
+</section>
+
+<!-- TRACKER -->
+<section class="tab" id="tab-track" hidden>
+  <div class="box">
+    <div class="hd"><h2>Application tracker &amp; deadline alerts</h2><button class="btn sm" onclick="askNotify()">🔔 Enable alerts</button></div>
+    <p class="mu">Track schemes from the Discover tab (📌 Track). Set the official deadline date, get alerts here and in your browser, or add it to your calendar.</p>
+    <div id="upcoming"></div><div id="trackList"></div>
+  </div>
+</section>
+</main>
+<footer>
+<p class="mu sm">Prototype with simplified sample rules. Confirm final eligibility and dates on the official scheme portal.</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="data.js"></script>
+<script src="schemes2.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
